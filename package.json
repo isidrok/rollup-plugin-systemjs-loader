@@ -1,0 +1,12 @@
+{
+  "name": "rollup-plugin-systemjs-loader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "magic-string": "^0.25.7"
+  }
+}
