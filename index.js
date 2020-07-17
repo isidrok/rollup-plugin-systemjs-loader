@@ -1,8 +1,14 @@
 const MagicString = require('magic-string');
 const fs = require('fs');
 
-function systemJSLoader(config) {
-    let contentLoading;
+const defaults = {
+    baseURL: '/',
+    include: null
+}
+
+function systemJSLoader(options) {
+    const config = {...defaults, ...options};
+
     let contentToInclude;
 
     function before(content) {
@@ -10,24 +16,20 @@ function systemJSLoader(config) {
     }
 
     function after(fileName) {
-        return `System.import('./${fileName}')`;
-    }
-
-    function saveContentToInclude() {
-        if (!contentLoading) {
-            contentLoading = Promise.all(config.include.map((file) => {
-                return fs.promises.readFile(file, 'utf8');
-            })).then((include) => {
-                contentToInclude = include.join('\n');
-            });
-        }
-        return contentLoading;
+        return `System.import('${config.baseURL}${fileName}')`;
     }
 
     return {
         name: 'systemjs-loader',
         renderStart() {
-            return saveContentToInclude();
+            if(!config.include || !config.include.length){
+                this.error('You must supply at least one file to be included');
+            }
+            return Promise.all(config.include.map((file) => {
+                return fs.promises.readFile(file, 'utf8');
+            })).then((include) => {
+                contentToInclude = include.join('\n');
+            });
         },
         augmentChunkHash(chunk) {
             if (chunk.isEntry) {
