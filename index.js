@@ -2,29 +2,27 @@ const MagicString = require('magic-string');
 const fs = require('fs');
 
 function systemJSLoader(config) {
-    let contentLoading = false;
+    let contentLoading;
     let contentToInclude;
 
-    function before(content){
+    function before(content) {
         return `if(!window.System){ ${content} }`;
     }
 
-    function after(fileName){
+    function after(fileName) {
         return `System.import('./${fileName}')`;
     }
 
     function saveContentToInclude() {
-        if (contentLoading) {
-            return;
+        if (!contentLoading) {
+            contentLoading = Promise.all(config.include.map((file) => {
+                return fs.promises.readFile(file, 'utf8');
+            })).then((include) => {
+                contentToInclude = include.join('\n');
+            });
         }
-        contentLoading = true;
-        return Promise.all(config.include.map((file) => {
-            return fs.promises.readFile(file, 'utf8');
-        })).then((include) => {
-            contentToInclude = include.join('\n');
-        });
+        return contentLoading;
     }
-
 
     return {
         name: 'systemjs-loader',
@@ -32,16 +30,13 @@ function systemJSLoader(config) {
             return saveContentToInclude();
         },
         augmentChunkHash(chunk) {
-            if(chunk.isEntry){
+            if (chunk.isEntry) {
                 return before(contentToInclude) + after(chunk.name);
             }
         },
         async renderChunk(code, chunk, options) {
             if (!chunk.isEntry) {
                 return null;
-            }
-            if (!contentToInclude) {
-                await getContentToInclude();
             }
             const magicString = new MagicString(code, { filename: chunk.fileName });
             magicString
