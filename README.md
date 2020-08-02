@@ -46,5 +46,5 @@ Base URL from which entry chunks must be imported.
 Type: `Array[...String]`<br>
 Required
 
-Array of file paths that must be included for loading SystemJS
+Array of file paths that must be included for loading SystemJS.
 
