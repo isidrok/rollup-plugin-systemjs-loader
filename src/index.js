@@ -1,5 +1,5 @@
-const MagicString = require('magic-string');
-const fs = require('fs');
+import fs from 'fs';
+import MagicString from 'magic-string';
 
 const defaults = {
     baseURL: '/',
@@ -7,7 +7,7 @@ const defaults = {
 }
 
 function systemJSLoader(options) {
-    const config = {...defaults, ...options};
+    const config = { ...defaults, ...options };
 
     let contentToInclude;
 
@@ -22,7 +22,7 @@ function systemJSLoader(options) {
     return {
         name: 'systemjs-loader',
         renderStart() {
-            if(!config.include || !config.include.length){
+            if (!config.include || !config.include.length) {
                 this.error('You must supply at least one file to be included');
             }
             return Promise.all(config.include.map((file) => {
@@ -52,4 +52,4 @@ function systemJSLoader(options) {
     }
 }
 
-module.exports = systemJSLoader;
+export default systemJSLoader;

@@ -1,12 +1,40 @@
 {
   "name": "rollup-plugin-systemjs-loader",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "description": "Rollup plugin to include SystemJS runtime in entry chunks.",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "keywords": ["rollup", "plugin", "SystemJS"],
+  "author": "Isidro Torregrosa Torralba",
+  "license": "MIT",
+  "repository": "isidrok/rollup-plugin-systemjs-loader",
+  "homepage": "https://github.com/isidrok/rollup-plugin-systemjs-loader/blob/master/README.md",
+  "bugs": "https://github.com/isidrok/rollup-plugin-systemjs-loader/issues",
+  "scripts": {
+    "test": "ava",
+    "build": "rollup -c",
+    "pretest": "npm run build",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "dependencies": {
     "magic-string": "^0.25.7"
+  },
+  "devDependencies": {
+    "ava": "^3.11.0",
+    "rollup": "^2.23.0"
+  },
+  "ava": {
+    "nodeArguments": [
+      "--experimental-modules"
+    ]
   }
 }
